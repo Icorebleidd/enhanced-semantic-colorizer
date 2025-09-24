@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SemanticColorizer
+namespace EnhancedSemanticColorizer
 {
     public static class Constants
     {

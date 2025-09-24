@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using CSharp = Microsoft.CodeAnalysis.CSharp;
 using VB = Microsoft.CodeAnalysis.VisualBasic;
 
-namespace SemanticColorizer
+namespace EnhancedSemanticColorizer
 {
 
     [Export(typeof(ITaggerProvider))]

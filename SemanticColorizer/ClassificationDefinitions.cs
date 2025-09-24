@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
 
-namespace SemanticColorizer
+namespace EnhancedSemanticColorizer
 {
     internal static class ClassificationTypes
     {

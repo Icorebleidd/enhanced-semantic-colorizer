@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SemanticColorizer")]
+[assembly: AssemblyTitle("EnhancedSemanticColorizer")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HicknHack Software GmbH")]
-[assembly: AssemblyProduct("SemanticColorizer")]
+[assembly: AssemblyProduct("EnhancedSemanticColorizer")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
