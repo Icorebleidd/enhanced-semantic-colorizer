@@ -15,7 +15,6 @@ using VB = Microsoft.CodeAnalysis.VisualBasic;
 
 namespace EnhancedSemanticColorizer
 {
-
     [Export(typeof(ITaggerProvider))]
     [ContentType("CSharp")]
     [ContentType("Basic")]

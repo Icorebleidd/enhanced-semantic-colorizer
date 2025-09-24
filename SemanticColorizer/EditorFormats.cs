@@ -72,6 +72,7 @@ namespace EnhancedSemanticColorizer
             DisplayName = "Semantic Normal Method";
         }
     }
+
     [Export(typeof(EditorFormatDefinition))]
     [ClassificationType(ClassificationTypeNames = Constants.LocalFunctionFormat)]
     [Name(Constants.LocalFunctionFormat)]
