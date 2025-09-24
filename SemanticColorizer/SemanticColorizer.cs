@@ -49,6 +49,7 @@ namespace EnhancedSemanticColorizer
         private readonly IClassificationType _localType;
         private readonly IClassificationType _typeSpecialType;
         private readonly IClassificationType _eventType;
+        private readonly IClassificationType _builtInMethodType;
 
         // Built in VS by default
         private readonly IClassificationType _builtInClassType;
@@ -107,6 +108,7 @@ namespace EnhancedSemanticColorizer
             _localType = registry.GetClassificationType(Constants.LocalFormat);
             _typeSpecialType = registry.GetClassificationType(Constants.TypeSpecialFormat);
             _eventType = registry.GetClassificationType(Constants.EventFormat);
+            _builtInMethodType = registry.GetClassificationType(Constants.BuiltInMethodFormat);
 
             // Built in VS by default
             _builtInClassType = registry.GetClassificationType(Constants.BuiltInClassTypeFormat);
@@ -199,8 +201,13 @@ namespace EnhancedSemanticColorizer
                                 yield return span.TextSpan.ToTagSpan(snapshot, _extensionMethodType);
                                 break;
                             case NewClassificationTypeNames.MethodName:
+                                //built-in method call
+                                if (IsBuiltInMethod(methodSymbol))
+                                {
+                                    yield return span.TextSpan.ToTagSpan(snapshot, _builtInMethodType);
+                                }
                                 //local function call
-                                if (methodSymbol.MethodKind == LocalMethodKind)
+                                else if (methodSymbol.MethodKind == LocalMethodKind)
                                 {
                                     yield return span.TextSpan.ToTagSpan(snapshot, _localFunctionType);
                                 }
@@ -262,6 +269,19 @@ namespace EnhancedSemanticColorizer
                         break;
                 }
             }
+        }
+
+        private bool IsBuiltInMethod(IMethodSymbol symbol)
+        {
+            if (symbol.DeclaringSyntaxReferences.Length == 0)
+                return true;
+            if (symbol.ContainingAssembly.Name == "mscorlib")
+                return true;
+            if (symbol.ContainingAssembly.Name == "System.Private.CoreLib")
+                return true;
+            if (symbol.ContainingAssembly.Name == "System.Runtime")
+                return true;
+            return false;
         }
 
         private bool IsSpecialType(ISymbol symbol)

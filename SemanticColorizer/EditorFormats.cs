@@ -178,4 +178,17 @@ namespace EnhancedSemanticColorizer
             DisplayName = "Semantic Event";
         }
     }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = Constants.BuiltInMethodFormat)]
+    [Name(Constants.BuiltInMethodFormat)]
+    [UserVisible(true)]
+    [Order(After = ClassificationTypeNames.Identifier)]
+    internal sealed class SemanticBuiltInMethodFormat : ClassificationFormatDefinition
+    {
+        public SemanticBuiltInMethodFormat()
+        {
+            DisplayName = "Semantic BuiltIn Method";
+        }
+    }
 }

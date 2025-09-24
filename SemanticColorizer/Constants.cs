@@ -17,6 +17,7 @@ namespace EnhancedSemanticColorizer
         public const String LocalFormat = "s.semantic-colorizer.local";
         public const String TypeSpecialFormat = "s.semantic-colorizer.type-special";
         public const String EventFormat = "s.semantic-colorizer.event";
+        public const String BuiltInMethodFormat = "s.semantic-colorizer.builtin-method";
 
         // Built in VS by default
         public const String BuiltInClassTypeFormat = "class name";
