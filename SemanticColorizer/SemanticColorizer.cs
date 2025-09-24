@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Classification;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
@@ -206,6 +207,16 @@ namespace EnhancedSemanticColorizer
                                 {
                                     yield return span.TextSpan.ToTagSpan(snapshot, _builtInMethodType);
                                 }
+                                //declaration method
+                                else if (IsDeclarationMethod(node))
+                                {
+                                    yield return span.TextSpan.ToTagSpan(snapshot, _builtInMethodType);
+                                }
+                                //method call
+                                else if (IsCallMethod(node))
+                                {
+                                    yield return span.TextSpan.ToTagSpan(snapshot, _builtInMethodType);
+                                }
                                 //local function call
                                 else if (methodSymbol.MethodKind == LocalMethodKind)
                                 {
@@ -281,6 +292,29 @@ namespace EnhancedSemanticColorizer
                 return true;
             if (symbol.ContainingAssembly.Name == "System.Runtime")
                 return true;
+            return false;
+        }
+
+        private bool IsDeclarationMethod(SyntaxNode node)
+        {
+            if (node.Language == LanguageNames.CSharp)
+                return node is Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax;
+
+            if (node.Language == LanguageNames.VisualBasic)
+                return node is Microsoft.CodeAnalysis.VisualBasic.Syntax.MethodStatementSyntax ||
+                       node is Microsoft.CodeAnalysis.VisualBasic.Syntax.MethodBlockSyntax;
+
+            return false;
+        }
+
+        private bool IsCallMethod(SyntaxNode node)
+        {
+            if (node.Language == LanguageNames.CSharp)
+                return node is Microsoft.CodeAnalysis.CSharp.Syntax.InvocationExpressionSyntax;
+
+            if (node.Language == LanguageNames.VisualBasic)
+                return node is Microsoft.CodeAnalysis.VisualBasic.Syntax.IdentifierNameSyntax;
+
             return false;
         }
 
