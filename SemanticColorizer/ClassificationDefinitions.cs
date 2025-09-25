@@ -62,6 +62,14 @@ namespace EnhancedSemanticColorizer
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(Constants.BuiltInMethodFormat)]
         internal static ClassificationTypeDefinition BuiltInMethodType;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(Constants.DeclarationMethodFormat)]
+        internal static ClassificationTypeDefinition DeclarationMethodType;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(Constants.CallMethodFormat)]
+        internal static ClassificationTypeDefinition CallMethodType;
 #pragma warning restore CS0649
     }
 }
