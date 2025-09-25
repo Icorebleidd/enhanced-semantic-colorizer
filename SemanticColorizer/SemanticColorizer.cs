@@ -303,6 +303,9 @@ namespace EnhancedSemanticColorizer
             if (ns.StartsWith("System", StringComparison.Ordinal))
                 return true;
 
+            if (ns.StartsWith("Microsoft", StringComparison.Ordinal))
+                return true;
+
             return false;
         }
 
