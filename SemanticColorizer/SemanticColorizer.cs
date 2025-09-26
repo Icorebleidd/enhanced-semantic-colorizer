@@ -200,15 +200,15 @@ namespace EnhancedSemanticColorizer
                                 break;
                             case NewClassificationTypeNames.MethodName:
                             case NewClassificationTypeNames.ExtensionMethodName:
-                                //built-in method call
-                                if (IsBuiltInMethod(methodSymbol))
-                                {
-                                    yield return span.TextSpan.ToTagSpan(snapshot, _builtInMethodType);
-                                }
                                 //declaration method
-                                else if (IsDeclarationMethod(node))
+                                if (IsDeclarationMethod(node))
                                 {
                                     yield return span.TextSpan.ToTagSpan(snapshot, _declarationMethodType);
+                                }
+                                //built-in method call
+                                else if (IsBuiltInMethod(methodSymbol))
+                                {
+                                    yield return span.TextSpan.ToTagSpan(snapshot, _builtInMethodType);
                                 }
                                 //method call
                                 else if (IsCallMethod(node))
