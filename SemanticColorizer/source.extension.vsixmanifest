@@ -5,8 +5,8 @@
         <DisplayName>EnhancedSemanticColorizer</DisplayName>
         <Description xml:space="preserve">An enhanced semantic syntax classifier extension based on Roslyn for C# and Visual Basic.</Description>
         <MoreInfo>https://github.com/Icorebleidd/enhanced-semantic-colorizer</MoreInfo>
-        <Icon>Rainbow_icon.png</Icon>
-        <PreviewImage>Preview.png</PreviewImage>
+        <Icon>Resources\Rainbow_icon.png</Icon>
+        <PreviewImage>Resources\Preview.png</PreviewImage>
         <Tags>Enhanced Semantic Syntax Highlighting Color</Tags>
     </Metadata>
     <Installation>
