@@ -4,6 +4,9 @@
 
 An enhanced Visual Studio 2015, 2017, 2019 and 2022 editor extension for semantic syntax highlighting.
 
+**Example** with theme (https://marketplace.visualstudio.com/items?itemName=LeonardoTozzo.eclipse-dark-theme)
+<img width="770" height="784" alt="Preview" src="https://github.com/user-attachments/assets/0aca8bc8-1c89-457a-b52c-c68c834c01db" />
+
 It uses the Roslyn APIs to highlight the following syntax types in distinctive colors to make them easily recognizable.
 
 To change the colors use the regular Visual Studio "Font and Colors" Options. Look for `Semantic *` in the "Display items".
@@ -20,6 +23,7 @@ To change the colors use the regular Visual Studio "Font and Colors" Options. Lo
 * Local variables
 * Special types (built in)
 * Local methods
+* Declaration methods
 * Built in methods
 
 The code is fairly simple, but it is not currently written using the Async APIs in Roslyn.
