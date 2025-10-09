@@ -5,11 +5,9 @@
         <DisplayName>EnhancedSemanticColorizer</DisplayName>
         <Description xml:space="preserve">An enhanced semantic syntax classifier extension based on Roslyn for C# and Visual Basic.</Description>
         <MoreInfo>https://github.com/Icorebleidd/enhanced-semantic-colorizer</MoreInfo>
-        <License>LICENSE.txt</License>
-        <ReleaseNotes>ReleaseNotes.txt</ReleaseNotes>
-        <Icon>rainbow.png</Icon>
-        <PreviewImage>SemanticColorizerExample.png</PreviewImage>
-        <Tags>Semantic Syntax Highlighting Color</Tags>
+        <Icon>Rainbow_icon.png</Icon>
+        <PreviewImage>Preview.png</PreviewImage>
+        <Tags>Enhanced Semantic Syntax Highlighting Color</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Version="[14.0,17.0)" Id="Microsoft.VisualStudio.Community">
