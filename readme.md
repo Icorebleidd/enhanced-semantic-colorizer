@@ -26,8 +26,6 @@ To change the colors use the regular Visual Studio "Font and Colors" Options. Lo
 * Declaration methods
 * Built in methods
 
-The code is fairly simple, but it is not currently written using the Async APIs in Roslyn.
-
 This extension works for the first final version of Visual Studio 2015 and all successors.
 
 You might want to combine this extension with:
