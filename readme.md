@@ -4,7 +4,7 @@
 
 An enhanced Visual Studio 2015, 2017, 2019 and 2022 editor extension for semantic syntax highlighting.
 
-**Example** with theme (https://marketplace.visualstudio.com/items?itemName=LeonardoTozzo.eclipse-dark-theme)
+**Example** with theme [Eclipse Dark Theme](https://marketplace.visualstudio.com/items?itemName=LeonardoTozzo.eclipse-dark-theme)
 <img width="770" height="784" alt="Preview" src="https://github.com/user-attachments/assets/0aca8bc8-1c89-457a-b52c-c68c834c01db" />
 
 It uses the Roslyn APIs to highlight the following syntax types in distinctive colors to make them easily recognizable.
