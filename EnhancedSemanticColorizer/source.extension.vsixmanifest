@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="EnhancedSemanticColorizer.1e0dece4-6e1a-4031-81f9-174c8c21bc6b" Version="2.0.0" Language="en-US" Publisher="Leonardo Tozzo" />
+    <DisplayName>Enhanced Semantic Colorizer</DisplayName>
+    <Description xml:space="preserve">An enhanced semantic syntax classifier extension based on Roslyn for C# and Visual Basic.</Description>
+    <MoreInfo>https://github.com/Icorebleidd/enhanced-semantic-colorizer</MoreInfo>
+    <Icon>Resources\logo.png</Icon>
+    <PreviewImage>Resources\Preview.png</PreviewImage>
+    <Tags>Enhanced Semantic Syntax Highlighting Color</Tags>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,17.0)">
+      <ProductArchitecture>x86</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.14,)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[14.0,17.0)">
+      <ProductArchitecture>x86</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="[17.14,)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[14.0,17.0)">
+      <ProductArchitecture>x86</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[17.14,)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" Version="[4.6,)" d:Source="Manual" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" Path="|%CurrentProject%|" d:Source="Project" d:ProjectName="%CurrentProject%" />
+  </Assets>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" DisplayName="Visual Studio core editor" Version="[14.0,)" />
+    <Prerequisite Id="Microsoft.VisualStudio.Component.Roslyn.Compiler" DisplayName="C# and Visual Basic Roslyn compilers" Version="[14.0,)" />
+  </Prerequisites>
+</PackageManifest>

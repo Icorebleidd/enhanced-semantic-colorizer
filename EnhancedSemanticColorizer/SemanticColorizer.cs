@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.Classification;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
@@ -10,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Threading.Tasks;
 using CSharp = Microsoft.CodeAnalysis.CSharp;
 using VB = Microsoft.CodeAnalysis.VisualBasic;
 
@@ -59,6 +59,13 @@ namespace EnhancedSemanticColorizer
         private readonly IClassificationType _builtInStructType;
 
         private Cache _cache;
+
+        // Reusable caches to reduce allocations and repeated work
+        private TextSpan _lastClassificationSpan;
+        private List<ClassifiedSpan> _lastClassifications;
+        private readonly Dictionary<TextSpan, SyntaxNode> _nodeCache = new Dictionary<TextSpan, SyntaxNode>();
+        private readonly Dictionary<TextSpan, ISymbol> _symbolCache = new Dictionary<TextSpan, ISymbol>();
+
 #pragma warning disable CS0067
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 #pragma warning restore CS0067
@@ -118,6 +125,9 @@ namespace EnhancedSemanticColorizer
             // Built in VS by default
             _builtInClassType = registry.GetClassificationType(Constants.BuiltInClassTypeFormat);
             _builtInStructType = registry.GetClassificationType(Constants.BuildInStructTypeFormat);
+
+            _lastClassificationSpan = default(TextSpan);
+            _lastClassifications = null;
         }
 
         public IEnumerable<ITagSpan<IClassificationTag>> GetTags(NormalizedSnapshotSpanCollection spans)
@@ -128,25 +138,26 @@ namespace EnhancedSemanticColorizer
             }
             if (_cache == null || _cache.Snapshot != spans[0].Snapshot)
             {
-                // this makes me feel dirty, but otherwise it will not
-                // work reliably, as TryGetSemanticModel() often will return false
-                // should make this into a completely async process somehow
-                var task = Cache.Resolve(_theBuffer, spans[0].Snapshot);
+                Cache cache = null;
                 try
                 {
-                    task.Wait();
+                    cache = Cache.Resolve(_theBuffer, spans[0].Snapshot);
                 }
                 catch (Exception)
                 {
-                    // TODO: report this to someone.
                     return Enumerable.Empty<ITagSpan<IClassificationTag>>();
                 }
-                _cache = task.Result;
+                _cache = cache;
                 if (_cache == null)
                 {
-                    // TODO: report this to someone.
                     return Enumerable.Empty<ITagSpan<IClassificationTag>>();
                 }
+
+                // snapshot changed, clear reusable caches to avoid holding references
+                _lastClassifications = null;
+                _lastClassificationSpan = default(TextSpan);
+                _nodeCache.Clear();
+                _symbolCache.Clear();
             }
             return GetTagsImpl(_cache, spans);
         }
@@ -157,14 +168,32 @@ namespace EnhancedSemanticColorizer
         {
             var snapshot = spans[0].Snapshot;
 
-            IEnumerable<ClassifiedSpan> classifiedSpans =
-              GetClassifiedSpans(doc.Workspace, doc.SemanticModel, spans);
+            var classifiedSpans = GetClassifiedSpans(doc.Document, doc.SemanticModel, spans);
+
+            // local references to caches to avoid repeated field access
+            var nodeCache = _nodeCache;
+            var symbolCache = _symbolCache;
+            var syntaxRoot = doc.SyntaxRoot;
+            var model = doc.SemanticModel;
 
             foreach (var span in classifiedSpans)
             {
-                var node = GetExpression(doc.SyntaxRoot.FindNode(span.TextSpan));
-                var symbol = doc.SemanticModel.GetSymbolInfo(node).Symbol;
-                if (symbol == null) symbol = doc.SemanticModel.GetDeclaredSymbol(node);
+                SyntaxNode node;
+                if (!nodeCache.TryGetValue(span.TextSpan, out node))
+                {
+                    node = GetNodeForSpan(syntaxRoot, span.TextSpan);
+                    nodeCache[span.TextSpan] = node;
+                }
+
+                ISymbol symbol;
+                if (!symbolCache.TryGetValue(span.TextSpan, out symbol))
+                {
+                    symbol = model.GetSymbolInfo(node).Symbol;
+                    if (symbol == null) symbol = model.GetDeclaredSymbol(node);
+                    // store even if null to avoid repeated lookups
+                    symbolCache[span.TextSpan] = symbol;
+                }
+
                 if (symbol == null)
                 {
                     continue;
@@ -280,6 +309,26 @@ namespace EnhancedSemanticColorizer
             }
         }
 
+        private SyntaxNode GetNodeForSpan(SyntaxNode syntaxRoot, TextSpan textSpan)
+        {
+            if (syntaxRoot == null) return null;
+            // find token at start; faster than FindNode for many cases
+            var token = syntaxRoot.FindToken(textSpan.Start);
+            var node = token.Parent;
+            while (node != null)
+            {
+                var span = node.Span;
+                if (span.Start <= textSpan.Start && span.End >= textSpan.End)
+                    break;
+                node = node.Parent;
+            }
+            if (node == null)
+            {
+                node = syntaxRoot;
+            }
+            return GetExpression(node);
+        }
+
         private static bool IsBuiltInMethod(IMethodSymbol symbol)
         {
             if (symbol == null)
@@ -345,6 +394,7 @@ namespace EnhancedSemanticColorizer
 
         private SyntaxNode GetExpression(SyntaxNode node)
         {
+            if (node == null) return null;
             if (node.CSharpKind() == CSharp.SyntaxKind.Argument)
             {
                 return ((CSharp.Syntax.ArgumentSyntax)node).Expression;
@@ -368,18 +418,79 @@ namespace EnhancedSemanticColorizer
         }
 
         private IEnumerable<ClassifiedSpan> GetClassifiedSpans(
-              Workspace workspace, SemanticModel model,
+              Document document, SemanticModel model,
               NormalizedSnapshotSpanCollection spans)
         {
             var comparer = StringComparer.InvariantCultureIgnoreCase;
-            var classifiedSpans =
-              spans.SelectMany(span =>
-              {
-                  var textSpan = TextSpan.FromBounds(span.Start, span.End);
-                  return Classifier.GetClassifiedSpans(model, textSpan, workspace);
-              });
-            return classifiedSpans.Where(span =>
-                SupportedClassificationTypeNames.Contains(span.ClassificationType, comparer));
+
+            if (spans.Count == 0)
+            {
+                return Enumerable.Empty<ClassifiedSpan>();
+            }
+
+            var min = spans.Min(s => s.Start);
+            var max = spans.Max(s => s.End);
+            var aggregateTextSpan = TextSpan.FromBounds(min, max);
+
+            // reuse last fetched classifications for the same aggregate span
+            if (_lastClassifications != null && _lastClassificationSpan == aggregateTextSpan)
+            {
+                // filter results to requested spans
+                var list = new List<ClassifiedSpan>();
+                var classifications = _lastClassifications;
+                for (int i = 0; i < classifications.Count; i++)
+                {
+                    var c = classifications[i];
+                    if (!SupportedClassificationTypeNames.Contains(c.ClassificationType, comparer)) continue;
+                    for (int j = 0; j < spans.Count; j++)
+                    {
+                        var s = spans[j];
+                        if (c.TextSpan.Start < s.End && c.TextSpan.End > s.Start)
+                        {
+                            list.Add(c);
+                            break;
+                        }
+                    }
+                }
+                return list;
+            }
+
+            List<ClassifiedSpan> classificationsResult = null;
+            ThreadHelper.JoinableTaskFactory.Run(async delegate
+            {
+                var list = await Classifier.GetClassifiedSpansAsync(document, aggregateTextSpan).ConfigureAwait(false);
+                // copy to list to decouple from underlying collection
+                classificationsResult = (list ?? Enumerable.Empty<ClassifiedSpan>()).ToList();
+            });
+
+            if (classificationsResult == null || classificationsResult.Count == 0)
+            {
+                _lastClassifications = classificationsResult;
+                _lastClassificationSpan = aggregateTextSpan;
+                return Enumerable.Empty<ClassifiedSpan>();
+            }
+
+            // cache the fetched classifications for reuse
+            _lastClassifications = classificationsResult;
+            _lastClassificationSpan = aggregateTextSpan;
+
+            var filteredList = new List<ClassifiedSpan>();
+            for (int i = 0; i < classificationsResult.Count; i++)
+            {
+                var c = classificationsResult[i];
+                if (!SupportedClassificationTypeNames.Contains(c.ClassificationType, comparer)) continue;
+                for (int j = 0; j < spans.Count; j++)
+                {
+                    var s = spans[j];
+                    if (c.TextSpan.Start < s.End && c.TextSpan.End > s.Start)
+                    {
+                        filteredList.Add(c);
+                        break;
+                    }
+                }
+            }
+
+            return filteredList;
         }
 
         private class Cache
@@ -392,7 +503,7 @@ namespace EnhancedSemanticColorizer
 
             private Cache() { }
 
-            public static async Task<Cache> Resolve(ITextBuffer buffer, ITextSnapshot snapshot)
+            public static Cache Resolve(ITextBuffer buffer, ITextSnapshot snapshot)
             {
                 var workspace = buffer.GetWorkspace();
                 var document = snapshot.GetOpenDocumentInCurrentContextWithChanges();
@@ -404,8 +515,13 @@ namespace EnhancedSemanticColorizer
 
                 // the ConfigureAwait() calls are important,
                 // otherwise we'll deadlock VS
-                var semanticModel = await document.GetSemanticModelAsync().ConfigureAwait(false);
-                var syntaxRoot = await document.GetSyntaxRootAsync().ConfigureAwait(false);
+                SemanticModel semanticModel = null;
+                SyntaxNode syntaxRoot = null;
+                ThreadHelper.JoinableTaskFactory.Run(async delegate
+                {
+                    semanticModel = await document.GetSemanticModelAsync().ConfigureAwait(false);
+                    syntaxRoot = await document.GetSyntaxRootAsync().ConfigureAwait(false);
+                });
                 return new Cache
                 {
                     Workspace = workspace,

@@ -11,6 +11,8 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.FieldFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "field name")]
+    [Order(After = "constant name")]
     internal sealed class SemanticFieldFormat : ClassificationFormatDefinition
     {
         public SemanticFieldFormat()
@@ -25,6 +27,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.EnumFieldFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "enum member name")]
     internal sealed class SemanticEnumFieldFormat : ClassificationFormatDefinition
     {
         public SemanticEnumFieldFormat()
@@ -38,6 +41,8 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.ExtensionMethodFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "extension method name")]
+    [Order(After = "method name")]
     internal sealed class SemanticExtensionMethodFormat : ClassificationFormatDefinition
     {
         public SemanticExtensionMethodFormat()
@@ -52,6 +57,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.StaticMethodFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "method name")]
     internal sealed class SemanticStaticMethodFormat : ClassificationFormatDefinition
     {
         public SemanticStaticMethodFormat()
@@ -65,6 +71,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.NormalMethodFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "method name")]
     internal sealed class SemanticNormalMethodFormat : ClassificationFormatDefinition
     {
         public SemanticNormalMethodFormat()
@@ -78,6 +85,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.LocalFunctionFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "method name")]
     internal sealed class SemanticLocalFunctionFormat : ClassificationFormatDefinition
     {
         public SemanticLocalFunctionFormat()
@@ -104,6 +112,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.ParameterFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "parameter name")]
     internal sealed class SemanticParameterFormat : ClassificationFormatDefinition
     {
         public SemanticParameterFormat()
@@ -132,6 +141,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.PropertyFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "property name")]
     internal sealed class SemanticPropertyFormat : ClassificationFormatDefinition
     {
         public SemanticPropertyFormat()
@@ -145,6 +155,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.LocalFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "local name")]
     internal sealed class SemanticLocalFormat : ClassificationFormatDefinition
     {
         public SemanticLocalFormat()
@@ -171,6 +182,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.EventFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "event name")]
     internal sealed class SemanticEventFormat : ClassificationFormatDefinition
     {
         public SemanticEventFormat()
@@ -184,6 +196,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.BuiltInMethodFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "method name")]
     internal sealed class SemanticBuiltInMethodFormat : ClassificationFormatDefinition
     {
         public SemanticBuiltInMethodFormat()
@@ -197,6 +210,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.DeclarationMethodFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "method name")]
     internal sealed class SemanticDeclarationMethodFormat : ClassificationFormatDefinition
     {
         public SemanticDeclarationMethodFormat()
@@ -210,6 +224,7 @@ namespace EnhancedSemanticColorizer
     [Name(Constants.CallMethodFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "method name")]
     internal sealed class SemanticCallMethodFormat : ClassificationFormatDefinition
     {
         public SemanticCallMethodFormat()
