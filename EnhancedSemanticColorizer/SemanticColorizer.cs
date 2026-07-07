@@ -47,7 +47,8 @@ namespace EnhancedSemanticColorizer
         private readonly IClassificationType _parameterType;
         private readonly IClassificationType _namespaceType;
         private readonly IClassificationType _propertyType;
-        private readonly IClassificationType _localType;
+        private readonly IClassificationType _localUsageType;
+        private readonly IClassificationType _localDeclarationType;
         private readonly IClassificationType _typeSpecialType;
         private readonly IClassificationType _eventType;
         private readonly IClassificationType _builtInMethodType;
@@ -115,7 +116,8 @@ namespace EnhancedSemanticColorizer
             _parameterType = registry.GetClassificationType(Constants.ParameterFormat);
             _namespaceType = registry.GetClassificationType(Constants.NamespaceFormat);
             _propertyType = registry.GetClassificationType(Constants.PropertyFormat);
-            _localType = registry.GetClassificationType(Constants.LocalFormat);
+            _localDeclarationType = registry.GetClassificationType(Constants.LocalDeclarationFormat);
+            _localUsageType = registry.GetClassificationType(Constants.LocalUsageFormat);
             _typeSpecialType = registry.GetClassificationType(Constants.TypeSpecialFormat);
             _eventType = registry.GetClassificationType(Constants.EventFormat);
             _builtInMethodType = registry.GetClassificationType(Constants.BuiltInMethodFormat);
@@ -272,7 +274,7 @@ namespace EnhancedSemanticColorizer
                         yield return span.TextSpan.ToTagSpan(snapshot, _propertyType);
                         break;
                     case SymbolKind.Local:
-                        yield return span.TextSpan.ToTagSpan(snapshot, _localType);
+                        yield return span.TextSpan.ToTagSpan(snapshot, IsLocalDeclaration(node) ? _localDeclarationType : _localUsageType);
                         break;
                     case SymbolKind.Event:
                         yield return span.TextSpan.ToTagSpan(snapshot, _eventType);
@@ -360,6 +362,8 @@ namespace EnhancedSemanticColorizer
 
         private bool IsDeclarationMethod(SyntaxNode node)
         {
+            if (node == null) return false;
+
             if (node.Language == LanguageNames.CSharp)
                 return node is Microsoft.CodeAnalysis.CSharp.Syntax.MethodDeclarationSyntax;
 
@@ -372,6 +376,8 @@ namespace EnhancedSemanticColorizer
 
         private bool IsCallMethod(SyntaxNode node)
         {
+            if (node == null) return false;
+
             if (node.Language == LanguageNames.CSharp)
                 return node is CSharp.Syntax.InvocationExpressionSyntax;
 
@@ -386,8 +392,32 @@ namespace EnhancedSemanticColorizer
             return false;
         }
 
+        private bool IsLocalDeclaration(SyntaxNode node)
+        {
+            if (node == null) return false;
+
+            if (node.Language == LanguageNames.CSharp)
+            {
+                return node is CSharp.Syntax.VariableDeclaratorSyntax ||
+                       node is CSharp.Syntax.SingleVariableDesignationSyntax ||
+                       node is CSharp.Syntax.ForEachStatementSyntax ||
+                       node is CSharp.Syntax.CatchDeclarationSyntax;
+            }
+
+            if (node.Language == LanguageNames.VisualBasic)
+            {
+                return node is VB.Syntax.VariableDeclaratorSyntax ||
+                       node is VB.Syntax.ModifiedIdentifierSyntax ||
+                       node is VB.Syntax.ForEachBlockSyntax;
+            }
+
+            return false;
+        }
+
         private bool IsSpecialType(ISymbol symbol)
         {
+            if (symbol == null) return false;
+
             var type = (INamedTypeSymbol)symbol;
             return type.SpecialType != SpecialType.None;
         }
@@ -412,6 +442,8 @@ namespace EnhancedSemanticColorizer
 
         private bool IsConstructor(IMethodSymbol methodSymbol)
         {
+            if (methodSymbol == null) return false;
+
             return methodSymbol.MethodKind == MethodKind.Constructor ||
                    methodSymbol.MethodKind == MethodKind.StaticConstructor ||
                    methodSymbol.MethodKind == MethodKind.SharedConstructor;

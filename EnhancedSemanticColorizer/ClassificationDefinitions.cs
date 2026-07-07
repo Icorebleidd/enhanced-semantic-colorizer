@@ -48,8 +48,12 @@ namespace EnhancedSemanticColorizer
         internal static ClassificationTypeDefinition PropertyType;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name(Constants.LocalFormat)]
-        internal static ClassificationTypeDefinition LocalType;
+        [Name(Constants.LocalDeclarationFormat)]
+        internal static ClassificationTypeDefinition LocalDeclarationType;
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(Constants.LocalUsageFormat)]
+        internal static ClassificationTypeDefinition LocalUsageType;
 
         [Export(typeof(ClassificationTypeDefinition))]
         [Name(Constants.TypeSpecialFormat)]

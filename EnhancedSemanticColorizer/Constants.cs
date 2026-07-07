@@ -14,7 +14,8 @@ namespace EnhancedSemanticColorizer
         public const String ParameterFormat = "s.semantic-colorizer.parameter";
         public const String NamespaceFormat = "s.semantic-colorizer.namespace";
         public const String PropertyFormat = "s.semantic-colorizer.property";
-        public const String LocalFormat = "s.semantic-colorizer.local";
+        public const String LocalDeclarationFormat = "s.semantic-colorizer.local-declaration";
+        public const String LocalUsageFormat = "s.semantic-colorizer.local-usage";
         public const String TypeSpecialFormat = "s.semantic-colorizer.type-special";
         public const String EventFormat = "s.semantic-colorizer.event";
         public const String BuiltInMethodFormat = "s.semantic-colorizer.builtin-method";

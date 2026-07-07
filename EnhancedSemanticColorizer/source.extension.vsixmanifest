@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="EnhancedSemanticColorizer.1e0dece4-6e1a-4031-81f9-174c8c21bc6b" Version="2.0.0" Language="en-US" Publisher="Leonardo Tozzo" />
+    <Identity Id="EnhancedSemanticColorizer.1e0dece4-6e1a-4031-81f9-174c8c21bc6b" Version="2.0.1" Language="en-US" Publisher="Leonardo Tozzo" />
     <DisplayName>Enhanced Semantic Colorizer</DisplayName>
     <Description xml:space="preserve">An enhanced semantic syntax classifier extension based on Roslyn for C# and Visual Basic.</Description>
     <MoreInfo>https://github.com/Icorebleidd/enhanced-semantic-colorizer</MoreInfo>

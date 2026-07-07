@@ -151,16 +151,30 @@ namespace EnhancedSemanticColorizer
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = Constants.LocalFormat)]
-    [Name(Constants.LocalFormat)]
+    [ClassificationType(ClassificationTypeNames = Constants.LocalDeclarationFormat)]
+    [Name(Constants.LocalDeclarationFormat)]
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
     [Order(After = "local name")]
-    internal sealed class SemanticLocalFormat : ClassificationFormatDefinition
+    internal sealed class SemanticLocalDeclarationFormat : ClassificationFormatDefinition
     {
-        public SemanticLocalFormat()
+        public SemanticLocalDeclarationFormat()
         {
-            DisplayName = "Semantic Local";
+            DisplayName = "Semantic Local Variable Declaration";
+        }
+    }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = Constants.LocalUsageFormat)]
+    [Name(Constants.LocalUsageFormat)]
+    [UserVisible(true)]
+    [Order(After = ClassificationTypeNames.Identifier)]
+    [Order(After = "local name")]
+    internal sealed class SemanticLocalUsageFormat : ClassificationFormatDefinition
+    {
+        public SemanticLocalUsageFormat()
+        {
+            DisplayName = "Semantic Local Variable Usage";
         }
     }
 
