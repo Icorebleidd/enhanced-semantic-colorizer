@@ -18,7 +18,8 @@ To change the colors use the regular Visual Studio "Font and Colors" Options. Lo
 * Parameters
 * Namespaces
 * Class properties
-* Local variables
+* Local variable declaration
+* Local variable usage
 * Special types (built in)
 * Call methods
 * Declaration methods
