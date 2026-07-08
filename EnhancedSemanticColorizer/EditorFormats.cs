@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using System.ComponentModel.Composition;
-using System.Windows.Media;
 
 namespace EnhancedSemanticColorizer
 {
@@ -12,13 +11,11 @@ namespace EnhancedSemanticColorizer
     [UserVisible(true)]
     [Order(After = ClassificationTypeNames.Identifier)]
     [Order(After = "field name")]
-    [Order(After = "constant name")]
     internal sealed class SemanticFieldFormat : ClassificationFormatDefinition
     {
         public SemanticFieldFormat()
         {
             DisplayName = "Semantic Field";
-            ForegroundColor = Colors.SaddleBrown;
         }
     }
 
@@ -48,7 +45,6 @@ namespace EnhancedSemanticColorizer
         public SemanticExtensionMethodFormat()
         {
             DisplayName = "Semantic Extension Method";
-            IsItalic = true;
         }
     }
 
@@ -118,7 +114,6 @@ namespace EnhancedSemanticColorizer
         public SemanticParameterFormat()
         {
             DisplayName = "Semantic Parameter";
-            ForegroundColor = Colors.SlateGray;
         }
     }
 
@@ -132,7 +127,6 @@ namespace EnhancedSemanticColorizer
         public SemanticNamespaceFormat()
         {
             DisplayName = "Semantic Namespace";
-            ForegroundColor = Colors.LimeGreen;
         }
     }
 
